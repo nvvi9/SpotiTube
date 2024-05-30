@@ -5,7 +5,6 @@ import androidx.room.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.nvvi9.spotitube.database.SpotiTubeDatabase
 import kotlinx.coroutines.Dispatchers
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 actual fun databaseModule() = module {

@@ -3,6 +3,7 @@ package com.nvvi9.spotitube.database.di
 import androidx.room.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.nvvi9.spotitube.database.SpotiTubeDatabase
+import com.nvvi9.spotitube.database.instantiateImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import org.koin.dsl.module
