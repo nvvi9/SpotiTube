@@ -5,16 +5,19 @@ import com.nvvi9.spotitube.network.model.MoodsAndGenresResponse
 
 fun MoodsAndGenresResponse.asMoodAndGenreCategories(): List<MoodAndGenreCategory> =
     contents.singleColumnBrowseResultsRenderer.tabs.flatMap { (tabRenderer) ->
-        tabRenderer.content.sectionListRenderer.contents.flatMap { (gridRenderer) ->
-            gridRenderer.items.mapNotNull { (musicNavigationButtonRenderer) ->
-                val name = musicNavigationButtonRenderer.buttonText.runs.firstOrNull()?.text ?: return@mapNotNull null
-                val clickCommand = musicNavigationButtonRenderer.clickCommand
-                MoodAndGenreCategory(
-                    id = clickCommand.browseEndpoint.params,
-                    name = name,
-                    trackingParams = musicNavigationButtonRenderer.trackingParams,
-                    color = musicNavigationButtonRenderer.solid.leftStripeColor
-                )
+        tabRenderer.content.sectionListRenderer.contents.mapNotNull { (gridRenderer) ->
+            val categoryName = gridRenderer.header.gridHeaderRenderer.title.runs.firstOrNull()?.text
+                ?: return@mapNotNull null
+            val moods = gridRenderer.items.mapNotNull { (musicNavigationButtonRenderer) ->
+                musicNavigationButtonRenderer.buttonText.runs.firstOrNull()?.text?.let { name ->
+                    MoodAndGenreCategory.MoodAndGenre(
+                        id = musicNavigationButtonRenderer.clickCommand.browseEndpoint.params,
+                        name = name,
+                        color = musicNavigationButtonRenderer.solid.leftStripeColor
+                    )
+                }
             }
+
+            MoodAndGenreCategory(categoryName, moods)
         }
     }
