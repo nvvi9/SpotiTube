@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -19,6 +18,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.nvvi9.spotitube.model.MoodAndGenreCategory
+import com.nvvi9.spotitube.platform.collectAsStatePlatform
 import com.nvvi9.spotitube.ui.components.MoodAndGenreCategoryItem
 import com.nvvi9.spotitube.ui.components.SearchBar
 import com.nvvi9.spotitube.utils.bouncingClickable
@@ -30,7 +30,7 @@ import spotitube.composeapp.generated.resources.what_do_you_want_to_listen_to
 
 @Composable
 fun SearchRoute(viewModel: SearchViewModel = koinViewModel()) {
-    val moodAndGenreCategories by viewModel.moodsAndGenreCategories.collectAsState()
+    val moodAndGenreCategories by viewModel.moodsAndGenreCategories.collectAsStatePlatform()
 
     SearchScreen(moodAndGenreCategories)
 }

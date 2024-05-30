@@ -17,7 +17,7 @@ kotlinx-datetime = "0.5.0"
 koin = "3.6.0-Beta4"
 koin-compose = "1.2.0-Beta4"
 room = "2.7.0-alpha03"
-sqlite = "2.5.0-alpha02"
+sqlite = "2.5.0-alpha03"
 ksp = "2.0.0-1.0.21"
 
 [libraries]
@@ -26,6 +26,7 @@ androidx-activityCompose = { module = "androidx.activity:activity-compose", vers
 androidx-testManifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidx-uiTest" }
 androidx-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "androidx-uiTest" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "androidx-navigation-compose" }
 kamel = { module = "media.kamel:kamel-image", version.ref = "kamel" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
