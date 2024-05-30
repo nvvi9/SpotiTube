@@ -1,7 +1,8 @@
 package com.nvvi9.spotitube.navigation
 
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -22,8 +23,8 @@ fun SpotitubeNavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier,
-        enterTransition = { EnterTransition.None },
-        exitTransition = { ExitTransition.None }
+        enterTransition = { fadeIn(tween(300)) },
+        exitTransition = { fadeOut(tween(300)) }
     ) {
         homeScreen()
         searchScreen()
