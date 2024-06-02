@@ -2,6 +2,7 @@ package com.nvvi9.spotitube.network.ktor
 
 import com.nvvi9.spotitube.network.YouTubeMusicDataSource
 import com.nvvi9.spotitube.network.model.BrowseRequest
+import com.nvvi9.spotitube.network.model.HomeResponse
 import com.nvvi9.spotitube.network.model.MoodsAndGenresResponse
 import com.nvvi9.spotitube.platform.defaultCountry
 import com.nvvi9.spotitube.platform.defaultLanguageTag
@@ -33,7 +34,14 @@ class KtorYouTubeMusicDataSource(private val httpClient: HttpClient) : YouTubeMu
             }
         }
 
-    private suspend fun browse(browseId: String? = null) = httpClient.post("browse") {
+    override suspend fun getHome(continuation: String?): Result<HomeResponse> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                browse("FEmusic_home", continuation).body()
+            }
+        }
+
+    private suspend fun browse(browseId: String? = null, continuation: String? = null) = httpClient.post("browse") {
         headers {
             append("X-Goog-Api-Format-Version", "1")
             append("X-YouTube-Client-Name", CLIENT_NAME)
@@ -46,6 +54,9 @@ class KtorYouTubeMusicDataSource(private val httpClient: HttpClient) : YouTubeMu
         parametersOf("key", API_KEY)
         parametersOf("prettyPrint", "false")
         parametersOf("alt", "json")
+        continuation?.let {
+            parametersOf("continuation", it)
+        }
         setBody(
             BrowseRequest(
                 browseId = browseId,
