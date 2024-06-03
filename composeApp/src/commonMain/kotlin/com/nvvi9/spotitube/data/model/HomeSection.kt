@@ -2,14 +2,21 @@ package com.nvvi9.spotitube.data.model
 
 import com.nvvi9.spotitube.model.HomeSection
 import com.nvvi9.spotitube.network.model.HomeResponse
+import com.nvvi9.spotitube.network.model.MusicCarouselShelfRenderer
+import com.nvvi9.spotitube.network.model.MusicTwoRowItemRenderer
+import com.nvvi9.spotitube.network.model.PageType
 
-fun HomeResponse.Contents.SingleColumnBrowseResultsRenderer.Tab.TabRenderer.Content.SectionListRenderer.Content.MusicCarouselShelfRenderer.SectionContentItem.MusicTwoRowItemRenderer.asHomeItem(): HomeSection.HomeItem? {
+private fun MusicTwoRowItemRenderer.asHomeItem(): HomeSection.HomeItem? {
     val title = this.title.runs.firstOrNull()?.text ?: return null
     val subtitle = this.subtitle.runs.firstOrNull()?.text
     val thumbnailUrl = this.thumbnailRenderer.musicThumbnailRenderer.thumbnail.thumbnails.maxByOrNull { it.height }?.url
     val browseEndpoint = this.navigationEndpoint.browseEndpoint
-    val pageType = browseEndpoint.browseEndpointContextSupportedConfigs.browseEndpointContextMusicConfig.pageType
-    val type = HomeSection.HomeItem.HomeItemType.entries.find { it.value == pageType } ?: return null
+    val type = when (browseEndpoint.browseEndpointContextSupportedConfigs.browseEndpointContextMusicConfig.pageType) {
+        PageType.MUSIC_PAGE_TYPE_ALBUM -> HomeSection.HomeItem.HomeItemType.ALBUM
+        PageType.MUSIC_PAGE_TYPE_ARTIST -> HomeSection.HomeItem.HomeItemType.ARTIST
+        PageType.MUSIC_PAGE_TYPE_PLAYLIST -> HomeSection.HomeItem.HomeItemType.PLAYLIST
+        PageType.MUSIC_PAGE_TYPE_USER_CHANNEL -> HomeSection.HomeItem.HomeItemType.USER_CHANNEL
+    }
     val browseId = browseEndpoint.browseId
     val params = browseEndpoint.params
 
@@ -23,7 +30,7 @@ fun HomeResponse.Contents.SingleColumnBrowseResultsRenderer.Tab.TabRenderer.Cont
     )
 }
 
-fun HomeResponse.Contents.SingleColumnBrowseResultsRenderer.Tab.TabRenderer.Content.SectionListRenderer.Content.MusicCarouselShelfRenderer.asHomeSection(): HomeSection? {
+private fun MusicCarouselShelfRenderer.asHomeSection(): HomeSection? {
     val headerRenderer = this.header.musicCarouselShelfBasicHeaderRenderer
     val id = headerRenderer.trackingParams
     val run = headerRenderer.title.runs.firstOrNull() ?: return null
