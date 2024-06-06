@@ -2,9 +2,11 @@ package com.nvvi9.spotitube.network.di
 
 import com.nvvi9.spotitube.network.ktor.KtorYouTubeMusicDataSource
 import com.nvvi9.spotitube.network.YouTubeMusicDataSource
+import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.headers
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -31,6 +33,15 @@ fun networkModule() = module {
                     explicitNulls = false
                     encodeDefaults = true
                 })
+            }
+
+            install(Logging) {
+                logger = object : Logger {
+                    override fun log(message: String) {
+                        Napier.d(tag = "Ktor", message = message)
+                    }
+                }
+                level = LogLevel.HEADERS
             }
 
             defaultRequest {

@@ -18,12 +18,15 @@ import com.nvvi9.spotitube.ui.components.SpotitubeBottomNavigation
 import com.nvvi9.spotitube.ui.components.TabNavigationItem
 import com.nvvi9.spotitube.ui.rememberSpotitubeAppState
 import com.nvvi9.spotitube.ui.theme.AppTheme
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.KoinContext
 
 @Composable
 internal fun App() {
+    Napier.base(DebugAntilog())
     KoinContext {
         val appState = rememberSpotitubeAppState()
         AppTheme {
