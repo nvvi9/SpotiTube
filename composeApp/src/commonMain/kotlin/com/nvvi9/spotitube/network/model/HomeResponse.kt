@@ -6,15 +6,13 @@ import kotlinx.serialization.Serializable
 data class HomeResponse(
     val responseContext: ResponseContext,
     val contents: Contents,
+    val continuationContents: ContinuationContents?,
     val trackingParams: String,
-    val maxAgeStoreSeconds: Long,
-    val background: ThumbnailClass
+    val maxAgeStoreSeconds: Long
 )
 
 @Serializable
-data class ThumbnailClass(
-    val musicThumbnailRenderer: MusicThumbnailRenderer
-)
+data class ThumbnailClass(val musicThumbnailRenderer: MusicThumbnailRenderer)
 
 @Serializable
 data class MusicThumbnailRenderer(
@@ -23,9 +21,7 @@ data class MusicThumbnailRenderer(
 )
 
 @Serializable
-data class MusicThumbnailRendererThumbnail(
-    val thumbnails: List<ThumbnailElement>
-)
+data class MusicThumbnailRendererThumbnail(val thumbnails: List<ThumbnailElement>)
 
 @Serializable
 data class ThumbnailElement(
@@ -35,33 +31,35 @@ data class ThumbnailElement(
 )
 
 @Serializable
-data class Contents(
-    val singleColumnBrowseResultsRenderer: SingleColumnBrowseResultsRenderer
+data class Contents(val singleColumnBrowseResultsRenderer: SingleColumnBrowseResultsRenderer)
+
+@Serializable
+data class ContinuationContents(val sectionListContinuation: SectionListContinuation)
+
+@Serializable
+data class SectionListContinuation(
+    val contents: List<SectionListRendererContent>,
+    val continuations: List<Continuation>?,
+    val trackingParams: String
 )
 
 @Serializable
-data class SingleColumnBrowseResultsRenderer(
-    val tabs: List<Tab>
-)
+data class SingleColumnBrowseResultsRenderer(val tabs: List<Tab>)
 
 @Serializable
-data class Tab(
-    val tabRenderer: TabRenderer
-)
+data class Tab(val tabRenderer: TabRenderer)
 
 @Serializable
 data class TabRenderer(
     val endpoint: Endpoint,
     val title: String,
     val selected: Boolean,
-    val content: TabRendererContent,
+    val content: TabRendererContent?,
     val trackingParams: String
 )
 
 @Serializable
-data class TabRendererContent(
-    val sectionListRenderer: SectionListRenderer
-)
+data class TabRendererContent(val sectionListRenderer: SectionListRenderer)
 
 @Serializable
 data class SectionListRenderer(
@@ -71,9 +69,7 @@ data class SectionListRenderer(
 )
 
 @Serializable
-data class SectionListRendererContent(
-    val musicCarouselShelfRenderer: MusicCarouselShelfRenderer
-)
+data class SectionListRendererContent(val musicCarouselShelfRenderer: MusicCarouselShelfRenderer)
 
 @Serializable
 data class MusicCarouselShelfRenderer(
@@ -100,20 +96,10 @@ data class MusicResponsiveListItemRenderer(
 )
 
 @Serializable
-data class PurpleBrowseEndpoint(
-    val browseId: String,
-    val browseEndpointContextSupportedConfigs: BrowseEndpointContextSupportedConfigs
-)
+data class BrowseEndpointContextSupportedConfigs(val browseEndpointContextMusicConfig: BrowseEndpointContextMusicConfig)
 
 @Serializable
-data class BrowseEndpointContextSupportedConfigs(
-    val browseEndpointContextMusicConfig: BrowseEndpointContextMusicConfig
-)
-
-@Serializable
-data class BrowseEndpointContextMusicConfig(
-    val pageType: PageType
-)
+data class BrowseEndpointContextMusicConfig(val pageType: PageType)
 
 enum class PageType {
     MUSIC_PAGE_TYPE_ALBUM,
@@ -125,30 +111,15 @@ enum class PageType {
 @Serializable
 data class NavigationEndpointWatchEndpoint(
     val videoId: String,
-    val playlistId: String,
-    val loggingContext: LoggingContext,
+    val playlistId: String?,
     val watchEndpointMusicSupportedConfigs: WatchEndpointMusicSupportedConfigs
 )
 
 @Serializable
-data class LoggingContext(
-    val vssLoggingContext: VssLoggingContext
-)
+data class WatchEndpointMusicSupportedConfigs(val watchEndpointMusicConfig: WatchEndpointMusicConfig)
 
 @Serializable
-data class VssLoggingContext(
-    val serializedContextData: String
-)
-
-@Serializable
-data class WatchEndpointMusicSupportedConfigs(
-    val watchEndpointMusicConfig: WatchEndpointMusicConfig
-)
-
-@Serializable
-data class WatchEndpointMusicConfig(
-    val musicVideoType: MusicVideoType
-)
+data class WatchEndpointMusicConfig(val musicVideoType: MusicVideoType)
 
 enum class MusicVideoType {
     MUSIC_VIDEO_TYPE_ATV,
@@ -157,91 +128,67 @@ enum class MusicVideoType {
 }
 
 @Serializable
-data class MusicResponsiveListItemRendererMenu(
-    val menuRenderer: PurpleMenuRenderer
-)
+data class MusicResponsiveListItemRendererMenu(val menuRenderer: MenuRenderer)
 
 @Serializable
-data class PurpleMenuRenderer(
-    val items: List<PurpleItem>,
+data class MenuRenderer(
+    val items: List<Item>,
     val trackingParams: String,
-    val topLevelButtons: List<TopLevelButton>,
+    val topLevelButtons: List<TopLevelButton>?,
 )
 
 @Serializable
-data class PurpleItem(
+data class Item(
     val menuNavigationItemRenderer: MenuItemRenderer?,
-    val menuServiceItemRenderer: MenuItemRenderer?,
-    val toggleMenuServiceItemRenderer: PurpleToggleMenuServiceItemRenderer?
+    val menuServiceItemRenderer: MenuItemRenderer?
 )
 
 @Serializable
 data class MenuItemRenderer(
-    val text: Strapline,
-    val navigationEndpoint: MenuNavigationItemRendererNavigationEndpoint?,
+    val text: TextRun,
+    val navigationEndpoint: NavigationEndpoint?,
     val trackingParams: String,
 )
 
 @Serializable
-data class MenuNavigationItemRendererNavigationEndpoint(
+data class NavigationEndpoint(
     val clickTrackingParams: String,
     val watchEndpoint: NavigationEndpointWatchEndpoint?,
     val modalEndpoint: ModalEndpoint?,
-    val browseEndpoint: PurpleBrowseEndpoint?,
+    val browseEndpoint: BrowseEndpoint?,
     val watchPlaylistEndpoint: WatchPlaylistEndpoint?
 )
 
 @Serializable
-data class ModalEndpoint(
-    val modal: Modal
-)
+data class ModalEndpoint(val modal: Modal)
 
 @Serializable
-data class Modal(
-    val modalWithTitleAndButtonRenderer: ModalWithTitleAndButtonRenderer
-)
+data class Modal(val modalWithTitleAndButtonRenderer: ModalWithTitleAndButtonRenderer)
 
 @Serializable
 data class ModalWithTitleAndButtonRenderer(
-    val title: Strapline,
-    val content: Strapline,
+    val title: TextRun,
+    val content: TextRun,
     val button: Button
 )
 
 @Serializable
-data class Button(
-    val buttonRenderer: ButtonButtonRenderer
-)
+data class Button(val buttonRenderer: ButtonButtonRenderer)
 
 @Serializable
 data class ButtonButtonRenderer(
     val isDisabled: Boolean,
-    val text: Strapline,
+    val text: TextRun,
     val trackingParams: String
 )
 
 @Serializable
-data class Strapline(
-    val runs: List<StraplineRun>
-)
-
-@Serializable
-data class StraplineRun(
-    val text: String
-)
+data class TextRun(val runs: List<Run>)
 
 @Serializable
 data class WatchPlaylistEndpoint(
     val playlistId: String,
     val params: String
-)
-
-@Serializable
-data class PurpleToggleMenuServiceItemRenderer(
-    val defaultText: Strapline,
-    val defaultServiceEndpoint: DefaultServiceEndpoint,
-    val toggledText: Strapline,
-    val trackingParams: String
 )
 
 @Serializable
@@ -265,133 +212,55 @@ data class LikeButtonRenderer(
 )
 
 @Serializable
-data class PlaylistItemData(
-    val videoId: String
-)
+data class PlaylistItemData(val videoId: String)
 
 @Serializable
 data class MusicTwoRowItemRenderer(
     val thumbnailRenderer: ThumbnailClass,
-    val title: MusicTwoRowItemRendererTitle,
-    val subtitle: Subtitle,
-    val navigationEndpoint: MusicTwoRowItemRendererNavigationEndpoint,
+    val title: TextRun,
+    val subtitle: TextRun,
+    val navigationEndpoint: NavigationEndpoint,
     val trackingParams: String,
     val menu: MusicTwoRowItemRendererMenu
 )
 
 @Serializable
 data class MusicTwoRowItemRendererMenu(
-    val menuRenderer: FluffyMenuRenderer
+    val menuRenderer: MenuRenderer
 )
 
 @Serializable
-data class FluffyMenuRenderer(
-    val items: List<FluffyItem>,
-    val trackingParams: String
-)
-
-@Serializable
-data class FluffyItem(
-    val menuNavigationItemRenderer: MenuItemRenderer?,
-    val menuServiceItemRenderer: MenuItemRenderer?,
-    val toggleMenuServiceItemRenderer: FluffyToggleMenuServiceItemRenderer?
-)
-
-@Serializable
-data class FluffyToggleMenuServiceItemRenderer(
-    val defaultText: Strapline,
-    val defaultServiceEndpoint: DefaultServiceEndpoint,
-    val toggledText: Strapline,
-    val trackingParams: String
-)
-
-@Serializable
-data class MusicTwoRowItemRendererNavigationEndpoint(
-    val clickTrackingParams: String,
-    val browseEndpoint: FluffyBrowseEndpoint
-)
-
-@Serializable
-data class FluffyBrowseEndpoint(
+data class BrowseEndpoint(
     val browseId: String,
     val params: String?,
-    val browseEndpointContextSupportedConfigs: BrowseEndpointContextSupportedConfigs
+    val browseEndpointContextSupportedConfigs: BrowseEndpointContextSupportedConfigs?
 )
 
 @Serializable
-data class Subtitle(
-    val runs: List<SubtitleRun>
-)
-
-@Serializable
-data class SubtitleRun(
-    val text: String,
-    val navigationEndpoint: TentacledNavigationEndpoint?
-)
-
-@Serializable
-data class TentacledNavigationEndpoint(
-    val clickTrackingParams: String,
-    val browseEndpoint: PurpleBrowseEndpoint
-)
-
-@Serializable
-data class MusicTwoRowItemRendererTitle(
-    val runs: List<FluffyRun>
-)
-
-@Serializable
-data class FluffyRun(
-    val text: String,
-    val navigationEndpoint: MusicTwoRowItemRendererNavigationEndpoint
-)
-
-@Serializable
-data class MusicCarouselShelfRendererHeader(
-    val musicCarouselShelfBasicHeaderRenderer: MusicCarouselShelfBasicHeaderRenderer
-)
+data class MusicCarouselShelfRendererHeader(val musicCarouselShelfBasicHeaderRenderer: MusicCarouselShelfBasicHeaderRenderer)
 
 @Serializable
 data class MusicCarouselShelfBasicHeaderRenderer(
-    val title: MusicCarouselShelfBasicHeaderRendererTitle,
-    val strapline: Strapline?,
+    val title: TextRun,
+    val strapline: TextRun?,
     val headerStyle: String,
     val moreContentButton: MoreContentButton?,
     val trackingParams: String
 )
 
 @Serializable
-data class MoreContentButton(
-    val buttonRenderer: MoreContentButtonButtonRenderer
-)
+data class MoreContentButton(val buttonRenderer: MoreContentButtonButtonRenderer)
 
 @Serializable
 data class MoreContentButtonButtonRenderer(
     val style: String,
-    val text: Strapline,
-    val navigationEndpoint: StickyNavigationEndpoint,
+    val text: TextRun,
+    val navigationEndpoint: NavigationEndpoint,
     val trackingParams: String
 )
 
 @Serializable
-data class StickyNavigationEndpoint(
-    val clickTrackingParams: String,
-    val watchPlaylistEndpoint: WatchPlaylistEndpoint?,
-    val browseEndpoint: EndpointBrowseEndpoint?
-)
-
-@Serializable
-data class EndpointBrowseEndpoint(
-    val browseId: String
-)
-
-@Serializable
-data class MusicCarouselShelfBasicHeaderRendererTitle(
-    val runs: List<TentacledRun>
-)
-
-@Serializable
-data class TentacledRun(
+data class Run(
     val text: String,
     val navigationEndpoint: Endpoint?
 )
@@ -399,13 +268,11 @@ data class TentacledRun(
 @Serializable
 data class Endpoint(
     val clickTrackingParams: String,
-    val browseEndpoint: EndpointBrowseEndpoint
+    val browseEndpoint: BrowseEndpoint
 )
 
 @Serializable
-data class Continuation(
-    val nextContinuationData: NextContinuationData
-)
+data class Continuation(val nextContinuationData: NextContinuationData)
 
 @Serializable
 data class NextContinuationData(
@@ -415,7 +282,7 @@ data class NextContinuationData(
 
 @Serializable
 data class ResponseContext(
-    val visitorData: String,
+    val visitorData: String?,
     val serviceTrackingParams: List<ServiceTrackingParam>,
     val maxAgeSeconds: Long
 )

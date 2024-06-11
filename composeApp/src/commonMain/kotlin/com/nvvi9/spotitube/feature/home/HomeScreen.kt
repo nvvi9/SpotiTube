@@ -1,12 +1,15 @@
 package com.nvvi9.spotitube.feature.home
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.nvvi9.spotitube.model.HomeSection
 import com.nvvi9.spotitube.platform.collectAsStatePlatform
 import com.nvvi9.spotitube.ui.components.HomeSectionItem
@@ -25,9 +28,10 @@ fun HomeRoute(viewModel: HomeViewModel = koinViewModel()) {
 fun HomeScreen(homeSections: List<HomeSection>) {
     val scrollState = rememberLazyListState()
 
-    Box(contentAlignment = Alignment.Center) {
+    Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
-            state = scrollState
+            state = scrollState,
+            contentPadding = PaddingValues(bottom = 60.dp)
         ) {
             item {
                 TopHomeItem(TopItem.sample)

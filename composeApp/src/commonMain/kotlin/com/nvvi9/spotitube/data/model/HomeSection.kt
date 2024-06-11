@@ -8,15 +8,16 @@ import com.nvvi9.spotitube.network.model.PageType
 
 private fun MusicTwoRowItemRenderer.asHomeItem(): HomeSection.HomeItem? {
     val title = this.title.runs.firstOrNull()?.text ?: return null
-    val subtitle = this.subtitle.runs.firstOrNull()?.text
-    val thumbnailUrl = this.thumbnailRenderer.musicThumbnailRenderer.thumbnail.thumbnails.maxByOrNull { it.height }?.url
-    val browseEndpoint = this.navigationEndpoint.browseEndpoint
-    val type = when (browseEndpoint.browseEndpointContextSupportedConfigs.browseEndpointContextMusicConfig.pageType) {
+    val browseEndpoint = this.navigationEndpoint.browseEndpoint ?: return null
+    val type = when (browseEndpoint.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType) {
         PageType.MUSIC_PAGE_TYPE_ALBUM -> HomeSection.HomeItem.HomeItemType.ALBUM
         PageType.MUSIC_PAGE_TYPE_ARTIST -> HomeSection.HomeItem.HomeItemType.ARTIST
         PageType.MUSIC_PAGE_TYPE_PLAYLIST -> HomeSection.HomeItem.HomeItemType.PLAYLIST
         PageType.MUSIC_PAGE_TYPE_USER_CHANNEL -> HomeSection.HomeItem.HomeItemType.USER_CHANNEL
+        null -> return null
     }
+    val subtitle = this.subtitle.runs.firstOrNull()?.text
+    val thumbnailUrl = this.thumbnailRenderer.musicThumbnailRenderer.thumbnail.thumbnails.maxByOrNull { it.height }?.url
     val browseId = browseEndpoint.browseId
     val params = browseEndpoint.params
 
@@ -50,8 +51,9 @@ private fun MusicCarouselShelfRenderer.asHomeSection(): HomeSection? {
 }
 
 fun HomeResponse.asHomeSections(): List<HomeSection> =
-    this.contents.singleColumnBrowseResultsRenderer.tabs.flatMap { tab ->
-        tab.tabRenderer.content.sectionListRenderer.contents.mapNotNull {
-            it.musicCarouselShelfRenderer.asHomeSection()
-        }
-    }
+    this.contents.singleColumnBrowseResultsRenderer.tabs
+        .asSequence()
+        .flatMap { it.tabRenderer.content?.sectionListRenderer?.contents.orEmpty() }
+        .plus(this.continuationContents?.sectionListContinuation?.contents.orEmpty())
+        .mapNotNull { it.musicCarouselShelfRenderer.asHomeSection() }
+        .toList()
