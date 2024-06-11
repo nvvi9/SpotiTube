@@ -63,7 +63,6 @@ kotlin {
             implementation(libs.sqlite.bundled)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.navigation.compose)
-            implementation(libs.androidx.lifecycle.runtime.compose)
         }
 
         commonTest.dependencies {
@@ -81,17 +80,18 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
         }
 
-        iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
+        iosMain {
+            kotlin.srcDir("build/generated/ksp/metadata")
+            dependencies {
+                implementation(libs.ktor.client.darwin)
+            }
         }
     }
 }
 
 dependencies {
+    add("kspCommonMainMetadata", libs.room.compiler)
     add("kspAndroid", libs.room.compiler)
-    add("kspIosSimulatorArm64", libs.room.compiler)
-    add("kspIosX64", libs.room.compiler)
-    add("kspIosArm64", libs.room.compiler)
 }
 
 android {
@@ -134,4 +134,10 @@ buildConfig {
 
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().configureEach {
+    if (name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
 }
