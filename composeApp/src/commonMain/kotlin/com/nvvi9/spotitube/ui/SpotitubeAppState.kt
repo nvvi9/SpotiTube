@@ -9,11 +9,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.nvvi9.spotitube.feature.home.navigation.HOME_ROUTE
 import com.nvvi9.spotitube.feature.home.navigation.navigateToHome
-import com.nvvi9.spotitube.feature.library.navigation.YOUR_LIBRARY_ROUTE
 import com.nvvi9.spotitube.feature.library.navigation.navigateToYourLibrary
-import com.nvvi9.spotitube.feature.search.navigation.SEARCH_ROUTE
 import com.nvvi9.spotitube.feature.search.navigation.navigateToSearch
 import com.nvvi9.spotitube.navigation.TopLevelDestination
 
@@ -28,11 +25,6 @@ class SpotitubeAppState(val navController: NavHostController) {
 
     val currentDestination: NavDestination?
         @Composable get() = navController.currentBackStackEntryAsState().value?.destination
-
-    val showNavBar
-        @Composable get() = currentDestination?.route?.let {
-            it == HOME_ROUTE || it == SEARCH_ROUTE || it == YOUR_LIBRARY_ROUTE
-        } ?: false
 
     val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.entries
 

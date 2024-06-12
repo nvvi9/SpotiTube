@@ -1,14 +1,12 @@
 package com.nvvi9.spotitube
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -30,45 +28,44 @@ internal fun App() {
         val appState = rememberSpotitubeAppState()
 
         AppTheme {
-            Surface(
+            Scaffold(
                 modifier = Modifier.safeDrawingPadding(),
-                color = MaterialTheme.colorScheme.background
-            ) {
-                Box {
-                    SpotitubeNavHost(appState)
-                    Column(modifier = Modifier.align(Alignment.BottomCenter)) {
-                        SpotitubeBottomNavigation {
-                            appState.topLevelDestinations.forEach { topLevelDestination ->
-                                TabNavigationItem(
-                                    selected = appState.currentDestination?.hierarchy?.any {
-                                        it.route?.contains(
-                                            topLevelDestination.name,
-                                            true
-                                        ) ?: false
-                                    } ?: false,
-                                    onClick = {
-                                        appState.navigateToTopLevelDestination(
-                                            topLevelDestination
-                                        )
-                                    },
-                                    icon = {
-                                        Icon(
-                                            painter = painterResource(topLevelDestination.icon),
-                                            contentDescription = null
-                                        )
-                                    },
-                                    label = {
-                                        Text(
-                                            text = stringResource(topLevelDestination.title),
-                                            style = MaterialTheme.typography.bodySmall
-                                        )
-                                    },
-                                    selectedContentColor = Color.White
-                                )
-                            }
+                containerColor = Color.Transparent,
+                contentColor = MaterialTheme.colorScheme.onBackground,
+                bottomBar = {
+                    SpotitubeBottomNavigation {
+                        appState.topLevelDestinations.forEach { topLevelDestination ->
+                            TabNavigationItem(
+                                selected = appState.currentDestination?.hierarchy?.any {
+                                    it.route?.contains(
+                                        topLevelDestination.name,
+                                        true
+                                    ) ?: false
+                                } ?: false,
+                                onClick = {
+                                    appState.navigateToTopLevelDestination(
+                                        topLevelDestination
+                                    )
+                                },
+                                icon = {
+                                    Icon(
+                                        painter = painterResource(topLevelDestination.icon),
+                                        contentDescription = null
+                                    )
+                                },
+                                label = {
+                                    Text(
+                                        text = stringResource(topLevelDestination.title),
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                },
+                                selectedContentColor = Color.White
+                            )
                         }
                     }
                 }
+            ) {
+                SpotitubeNavHost(appState, modifier = Modifier.fillMaxSize())
             }
         }
     }
