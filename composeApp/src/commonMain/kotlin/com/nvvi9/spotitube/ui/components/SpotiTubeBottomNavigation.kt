@@ -2,11 +2,24 @@ package com.nvvi9.spotitube.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -22,15 +35,19 @@ import com.nvvi9.spotitube.utils.bouncingSelectable
 import kotlin.math.roundToInt
 
 @Composable
-fun SpotitubeBottomNavigation(modifier: Modifier = Modifier, navigationItems: @Composable RowScope.() -> Unit) {
+fun SpotitubeBottomNavigation(
+    modifier: Modifier = Modifier,
+    navigationItems: @Composable RowScope.() -> Unit
+) {
+    val backgroundColor = MaterialTheme.colorScheme.background
     val gradientBrush = remember {
         Brush.verticalGradient(
             colorStops = arrayOf(
-                0.0f to Color.Black,
-                0.3f to Color.Black.copy(alpha = 0.9f),
-                0.5f to Color.Black.copy(alpha = 0.8f),
-                0.7f to Color.Black.copy(alpha = 0.6f),
-                0.9f to Color.Black.copy(alpha = 0.2f),
+                0.0f to backgroundColor,
+                0.3f to backgroundColor.copy(alpha = 0.9f),
+                0.5f to backgroundColor.copy(alpha = 0.8f),
+                0.7f to backgroundColor.copy(alpha = 0.6f),
+                0.9f to backgroundColor.copy(alpha = 0.2f),
                 1f to Color.Transparent
             ),
             startY = Float.POSITIVE_INFINITY,

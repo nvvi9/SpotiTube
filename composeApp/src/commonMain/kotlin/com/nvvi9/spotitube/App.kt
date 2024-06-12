@@ -2,8 +2,7 @@ package com.nvvi9.spotitube
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -29,12 +28,13 @@ internal fun App() {
     Napier.base(DebugAntilog())
     KoinContext {
         val appState = rememberSpotitubeAppState()
+
         AppTheme {
             Surface(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.safeDrawingPadding(),
                 color = MaterialTheme.colorScheme.background
             ) {
-                Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
+                Box {
                     SpotitubeNavHost(appState)
                     Column(modifier = Modifier.align(Alignment.BottomCenter)) {
                         SpotitubeBottomNavigation {
@@ -46,7 +46,11 @@ internal fun App() {
                                             true
                                         ) ?: false
                                     } ?: false,
-                                    onClick = { appState.navigateToTopLevelDestination(topLevelDestination) },
+                                    onClick = {
+                                        appState.navigateToTopLevelDestination(
+                                            topLevelDestination
+                                        )
+                                    },
                                     icon = {
                                         Icon(
                                             painter = painterResource(topLevelDestination.icon),
